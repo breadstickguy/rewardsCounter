@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
-
+import Customer from './Customer';
 
 // A retailer offers a rewards program to its customers, awarding points based on each recorded purchase. 
 
@@ -53,6 +53,8 @@ const calculateRewards = transaction => {
 
 const mapRewardsPoints = transactions => transactions.map(t => ({...t, points: calculateRewards(t)}));
 
+const mapped = mapRewardsPoints(transactionData);
+
 // finds all customer names. In a larger dataset, this should be accomplished with a DB query as doing it in app will not be performant
 // transactions is the transaction data containing customer names, returns a unique set of names
 const getCustomerNames = transactions => [...new Set(transactions.map(t => t.name))];
@@ -63,31 +65,19 @@ const getTransactionsByCustomer = (transactions, customer) => transactions.filte
 // get transactions by month
 const getTransactionsByMonth = (transactions, month) => transactions.filter(t => t.month === month);
 
-// sums up the total rewards points for the values passed in.
+// sums up the total rewards points for the values passed in. Must have been mapped first
 const totalRewardsPoints = transactions => transactions.reduce((total, obj) => {
-  return total + obj.amount;
+  return total + obj.points;
 }, 0);
 
-console.log(totalRewardsPoints(getTransactionsByMonth(transactionData, 7)));
+console.log(mapped);
+console.log(totalRewardsPoints(getTransactionsByCustomer(mapped, "Bev")));
 
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {[...getCustomerNames(mapped)].map(name => <Customer name={name}/>)}
     </div>
   );
 }
