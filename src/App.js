@@ -21,16 +21,27 @@ import { useState } from 'react';
 
 // · Check solution into GitHub
 
-const transactions = [
+const transactionData = [
   {name: "John", month: new Date().getMonth('July 20'), amount: 150 },
   {name: "Bev", month: new Date().getMonth('July 20'), amount: 67 },
-  {name: "John", month: new Date().getMonth('July 20'), amount: 75 },
+  {name: "Larry", month: new Date().getMonth('July 20'), amount: 75 },
   {name: "Bev", month: new Date().getMonth('July 20'), amount: 300 },
   {name: "John", month: new Date().getMonth('July 20'), amount: 250 },
-  {name: "Bev", month: new Date().getMonth('July 20'), amount: 32 },
+  {name: "Larry", month: new Date().getMonth('July 20'), amount: 32 },
   {name: "John", month: new Date().getMonth('July 20'), amount: 80 },
-  {name: "Bev", month: new Date().getMonth('July 20'), amount: 400 }
+  {name: "Bev", month: new Date().getMonth('July 20'), amount: 400 },
+  {name: "Larry", month: new Date().getMonth('July 20'), amount: 234 }
 ];
+
+// finds all customer names. In a larger dataset, this should be accomplished with a DB query as doing it in app will not be performant
+// transactions is the transaction data containing customer names, returns a unique set of names
+const getCustomerNames = transactions => [...new Set(transactions.map(t => t.name))];
+
+// gets all transactions for a particular customer
+const getTransactionByCustomer = (data, customer) => data.filter(t => t.name === customer);
+
+console.log(getTransactionByCustomer(transactionData, "John"));
+
 
 
 // transaction is a single objects containing transaction data
@@ -51,7 +62,7 @@ const calculateRewards = transaction => {
   return 0;
 }
 
-console.log(transactions.forEach(transaction => console.log(calculateRewards(transaction))));
+// console.log(transactionData.forEach(transaction => console.log(calculateRewards(transaction))));
 
 function App() {
   return (
