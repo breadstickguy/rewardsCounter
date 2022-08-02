@@ -1,7 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Customer from './Customer';
+import TransactionList from './TransactionList';
+import Transaction from './Transaction';
+
+
 
 // A retailer offers a rewards program to its customers, awarding points based on each recorded purchase. 
 
@@ -10,8 +13,6 @@ import Customer from './Customer';
 // (e.g. a $120 purchase = 2x$20 + 1x$50 = 90 points). 
 
 // Given a record of every transaction during a three-month period, calculate the reward points earned for each customer per month and total. 
-
-
 
 // · Use React JS (do not use TypeScript) 
 
@@ -22,15 +23,15 @@ import Customer from './Customer';
 // · Check solution into GitHub
 
 const transactionData = [
-  {name: "John", month: new Date('July 20').getMonth(), amount: 150 },
-  {name: "Bev", month: new Date('August 20').getMonth(), amount: 67 },
-  {name: "Larry", month: new Date('Sept 20').getMonth(), amount: 75 },
-  {name: "Bev", month: new Date('July 20').getMonth(), amount: 300 },
-  {name: "John", month: new Date('August 20').getMonth(), amount: 250 },
-  {name: "Larry", month: new Date('Sept 20').getMonth(), amount: 32 },
-  {name: "John", month: new Date('August 20').getMonth(), amount: 80 },
-  {name: "Bev", month: new Date('July 20').getMonth(), amount: 400 },
-  {name: "Larry", month: new Date('August 20').getMonth(), amount: 234 }
+  {name: "John", month: "July", amount: 150 },
+  {name: "Bev", month: "August", amount: 67 },
+  {name: "Larry", month: "Sept", amount: 75 },
+  {name: "Bev", month: "July", amount: 300 },
+  {name: "John", month: "August", amount: 250 },
+  {name: "Larry", month: "Sept", amount: 32 },
+  {name: "John", month: "August", amount: 80 },
+  {name: "Bev", month: "July", amount: 400 },
+  {name: "Larry", month: "August", amount: 234 }
 ];
 
 // transaction is a single object containing transaction data
@@ -60,10 +61,10 @@ const mapped = mapRewardsPoints(transactionData);
 const getCustomerNames = transactions => [...new Set(transactions.map(t => t.name))];
 
 // gets all transactions for a particular customer, transactions is an array of transaction data, customer is the particular name you are looking for
-const getTransactionsByCustomer = (transactions, customer) => transactions.filter(t => t.name === customer);
+const getTransactionsByCustomer = (transactions, customer = "John") => transactions.filter(t => t.name === customer);
 
 // get transactions by month
-const getTransactionsByMonth = (transactions, month) => transactions.filter(t => t.month === month);
+const getTransactionsByMonth = (transactions, month = "July") => transactions.filter(t => t.month === month);
 
 // sums up the total rewards points for the values passed in. Must have been mapped first
 const totalRewardsPoints = transactions => transactions.reduce((total, obj) => {
@@ -71,13 +72,38 @@ const totalRewardsPoints = transactions => transactions.reduce((total, obj) => {
 }, 0);
 
 console.log(mapped);
-console.log(totalRewardsPoints(getTransactionsByCustomer(mapped, "Bev")));
-
+console.log(getTransactionsByCustomer(mapped, "Bev"));
 
 function App() {
+  const [customerState, setCustomerState] = useState('');
+  const [transactionsState, setTransState] = useState([]);
+
+  useEffect(() => { console.log(customerState)}, [customerState]);
+  // console.log(customerState);
+
+  function handleClick(name) {
+    setCustomerState(name);
+    // console.log(customerState);
+  };
   return (
     <div className="App">
-      {[...getCustomerNames(mapped)].map(name => <Customer name={name}/>)}
+        {[...getCustomerNames(mapped)].map(name => <Customer name={name} onclick={handleClick}/>)}
+      <TransactionList>
+        {getTransactionsByCustomer(mapped).map(t => <Transaction 
+                                                      name={t.name} 
+                                                      month={t.month} 
+                                                      amount={t.amount} 
+                                                      points={t.points}/>
+                                              )
+        }
+        {getTransactionsByMonth(mapped).map(t => <Transaction 
+                                                      name={t.name} 
+                                                      month={t.month} 
+                                                      amount={t.amount} 
+                                                      points={t.points}/>
+                                              )
+        }
+      </TransactionList>
     </div>
   );
 }

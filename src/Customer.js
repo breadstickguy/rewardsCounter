@@ -1,7 +1,9 @@
-function Customer({name}) {
+
+function Customer({name, onclick}) {
+    
     return (
-      <div className="App">
-        <div>I am a customer named {name} </div>     
+      <div className="buttons">
+            <button onClick={() => onclick(name)}>Customer Name: {name}</button>
       </div>
     );
   }
